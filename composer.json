@@ -1,0 +1,24 @@
+{
+    "name": "svichka/proxymarket",
+    "description": "PHP Proxy Market Adapter",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dasha A",
+            "email": "daria.iva@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/svichka/proxymarket/issues"
+    },
+    "require": {
+        "ext-json": "*",
+        "php": ">=5.6.0"
+    },
+    "autoload": {
+        "psr-4": {
+           "Proxymarket\\": "src/"
+        }
+    }
+}
