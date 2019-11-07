@@ -25,7 +25,7 @@ class Proxymarket {
 	const AVAILABLE_SUBNET = [32, 29];
 
 	const AVAILABLE_DURATIONS_IPV4 = [30, 60, 90, 180, 360];
-	const AVAILABLE_DURATIONS_IPV6 = [7, 14, 30, 60, 90, 180, 360];
+	const AVAILABLE_DURATIONS_IPV6 = [3, 7, 14, 30, 60, 90, 180, 360];
 
 	const AVAILABLE_COUNTRY = ['ru'];
 
