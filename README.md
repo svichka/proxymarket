@@ -36,7 +36,7 @@ $result = $p->buyProxy($count, $type = 'ipv4', $duration = 30, $country = 'ru', 
 
 - available durations for the ipv4: `30, 60, 90, 180, 360` days
 
-- available durations for the ipv6: `7, 14, 30, 60, 90, 180, 360` days
+- available durations for the ipv6: `3, 7, 14, 30, 60, 90, 180, 360` days
 
 `$country` - available country `ru`
 
