@@ -29,6 +29,8 @@ class Proxymarket {
 
 	const AVAILABLE_COUNTRY = ['ru'];
 
+	const AVAILABLE_IPV6_SPEEDS = [1, 2, 3]; // 1 - 1mb/s, 2 - 5mb/s, 3 - 15mb/s
+
 	const INTERNAL_SERVER_ERROR = 500;
 
 	const IPV6 = 'ipv6';
@@ -41,10 +43,11 @@ class Proxymarket {
 	 * @param string $country
 	 * @param string $promocode
 	 * @param int $subnet
+	 * @param ?int $speed
 	 * @return array
 	 * @throws Exception\ProxymarketInvalidParameterException
 	 */
-	private static function createBuyParamsArray($count, $type, $duration , $country , $promocode, $subnet) {
+	private static function createBuyParamsArray($count, $type, $duration , $country , $promocode, $subnet, $speed) {
 		$params = [];
 		$count = (int)$count;
 		if ($count <= 0) {
@@ -79,6 +82,13 @@ class Proxymarket {
 			$params['subnet'] = $subnet;
 		}
 
+		if (self::IPV6 === $type) {
+			if (null === $speed || !in_array($speed, self::AVAILABLE_IPV6_SPEEDS, true)) {
+				throw new Exception\ProxymarketInvalidParameterException('invalid speed');
+			}
+			$params['speed'] = $speed;
+		}
+
 		return ['PurchaseBilling' => $params];
 	}
 
@@ -98,8 +108,8 @@ class Proxymarket {
 		}
 		$params['type'] = $type;
 
-		if ($page < 0) {
-			throw new Exception\ProxymarketInvalidParameterException('Page must more ore equivalent zero');
+		if ($page < 1) {
+			throw new Exception\ProxymarketInvalidParameterException('Page must more ore equivalent 1');
 		}
 		$params['page'] = $page;
 
@@ -132,18 +142,19 @@ class Proxymarket {
 	 * @param string $country
 	 * @param string $promocode
 	 * @param null $subnet
+	 * @param ?int $speed
 	 * @return array
 	 * @throws Exception\ProxymarketError
 	 * @throws Exception\ProxymarketInvalidApikey
 	 * @throws Exception\ProxymarketInvalidParameterException
 	 * @throws Exception\ProxymarketUnsuccessResponse
 	 */
-	public function buyProxy($count, $type = 'ipv4', $duration = 30, $country = 'ru', $promocode = '', $subnet = null) {
+	public function buyProxy($count, $type = 'ipv4', $duration = 30, $country = 'ru', $promocode = '', $subnet = null, $speed = null) {
 		if (null === $this->apiKey) {
 			throw new Exception\ProxymarketInvalidApikey('Apikey must be not null');
 		}
 		$url = $this->serverUrl.$this->buyUrl.$this->apiKey;
-		$params = static::createBuyParamsArray($count, $type, $duration , $country , $promocode, $subnet);
+		$params = static::createBuyParamsArray($count, $type, $duration , $country , $promocode, $subnet, $speed);
 		$response = $this->curl->request($url, $params);
 		$response = json_decode($response, true);
 
@@ -163,7 +174,7 @@ class Proxymarket {
 	 * @throws Exception\ProxymarketInvalidParameterException
 	 * @throws Exception\ProxymarketUnsuccessResponse
 	 */
-	public function listProxy($type = 'all', $page=0, $pageSize=0, $sort = 0) {
+	public function listProxy($type = 'all', $page = 1, $pageSize = 0, $sort = 0) {
 		$url = $this->serverUrl.$this->listUrl.$this->apiKey;
 		$params = static::createListParamsArray($type, $page, $pageSize, $sort);
 		$response = $this->curl->request($url, $params);
